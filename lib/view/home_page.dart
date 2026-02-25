@@ -9,7 +9,6 @@ import 'package:app_envio/view/components/upload_tile.dart';
 import 'package:app_envio/view/components/custom_scaffold.dart';
 import 'package:app_envio/view/components/stat_item.dart';
 import 'package:app_envio/view/edit_user_page.dart';
-import 'package:app_envio/view/login_page.dart';
 import 'package:flutter/material.dart';
 
 enum ImageSource { camera, gallery }
@@ -167,12 +166,6 @@ class _HomePageState extends State<HomePage> {
 
     try {
       await authService.logout();
-      if (!mounted) return;
-
-      Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const LoginPage()),
-        (route) => false,
-      );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(
