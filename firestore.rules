@@ -1,0 +1,42 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user owns the document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Uploads collection
+    match /uploads/{uploadId} {
+      // Allow read if user is authenticated
+      // For Angular panel, all authenticated users can read
+      // You can restrict this further based on custom claims
+      allow read: if isAuthenticated();
+      
+      // Only allow create/update if user owns the upload
+      allow create: if isAuthenticated() 
+                    && request.resource.data.userId == request.auth.uid;
+      
+      allow update: if isOwner(resource.data.userId);
+      
+      // Only owner can delete
+      allow delete: if isOwner(resource.data.userId);
+    }
+    
+    // Optional: Admin rules (requires custom claims)
+    // Uncomment if you want admin access from Angular panel
+    /*
+    match /uploads/{uploadId} {
+      allow read, write: if isAuthenticated() 
+                         && request.auth.token.admin == true;
+    }
+    */
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "703696626484",
+    "project_id": "app-envio-rgw",
+    "storage_bucket": "app-envio-rgw.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:703696626484:android:c83efc8aa6dd740d66bb61",
+        "android_client_info": {
+          "package_name": "com.example.app_envio"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAscm1maGAdr8c-hfYKGx8gD6JHc1hJps0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
