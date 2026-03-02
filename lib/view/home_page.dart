@@ -580,12 +580,15 @@ class _HomePageState extends State<HomePage> {
                   if (pendingCount > 0 || failedCount > 0) ...[
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.15),
+                        color: Theme.of(context).colorScheme.secondary,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            blurRadius: 6,
+                            spreadRadius: 1,
+                          ),
+                        ],
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.2),
-                          width: 1,
-                        ),
                       ),
                       child: Badge(
                         label: Text('${pendingCount + failedCount}'),
