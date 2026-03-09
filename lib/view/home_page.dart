@@ -6,9 +6,11 @@ import 'package:app_envio/services/auth_service.dart';
 import 'package:app_envio/services/image_service.dart';
 import 'package:app_envio/services/sync_service.dart';
 import 'package:app_envio/view/components/upload_tile.dart';
+import 'package:app_envio/view/components/custom_app_bar.dart';
 import 'package:app_envio/view/components/custom_scaffold.dart';
 import 'package:app_envio/view/components/stat_item.dart';
 import 'package:app_envio/view/edit_user_page.dart';
+import 'package:app_envio/view/my_properties_page.dart';
 import 'package:flutter/material.dart';
 
 enum ImageSource { camera, gallery }
@@ -184,6 +186,12 @@ class _HomePageState extends State<HomePage> {
       if (!mounted) return;
       setState(() {});
     }
+  }
+
+  Future<void> _openMyPropertiesPage() async {
+    await Navigator.of(
+      context,
+    ).push<bool>(MaterialPageRoute(builder: (_) => const MyPropertiesPage()));
   }
 
   void _showImageOptions() {
@@ -488,205 +496,105 @@ class _HomePageState extends State<HomePage> {
         .length;
 
     return CustomScaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(80),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.primary.withValues(alpha: 0.85),
+      appBar: CustomAppBar(
+        leading: InkWell(
+          onTap: _openEditUserPage,
+          borderRadius: BorderRadius.circular(24),
+          child: Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.secondary,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  blurRadius: 6,
+                  spreadRadius: 1,
+                ),
               ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.15),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
-            border: Border(
-              bottom: BorderSide(
-                color: Colors.white.withValues(alpha: 0.1),
-                width: 1,
-              ),
-            ),
-          ),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              child: Row(
-                children: [
-                  InkWell(
-                    onTap: _openEditUserPage,
-                    borderRadius: BorderRadius.circular(24),
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.secondary,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.2),
-                            blurRadius: 6,
-                            spreadRadius: 1,
-                          ),
-                        ],
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.person,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          user?.displayName ?? 'Usuário',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.3,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          user?.email ?? '',
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.8),
-                            fontSize: 11,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  if (pendingCount > 0 || failedCount > 0) ...[
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.secondary,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.2),
-                            blurRadius: 6,
-                            spreadRadius: 1,
-                          ),
-                        ],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Badge(
-                        label: Text('${pendingCount + failedCount}'),
-                        child: IconButton(
-                          icon: _isSyncing
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white,
-                                    ),
-                                  ),
-                                )
-                              : const Icon(
-                                  Icons.cloud_upload,
-                                  color: Colors.white,
-                                ),
-                          onPressed: _isSyncing ? null : _syncUploads,
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(
-                            minWidth: 40,
-                            minHeight: 40,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                  ],
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          blurRadius: 6,
-                          spreadRadius: 1,
-                        ),
-                      ],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: IconButton(
-                      icon: const Icon(Icons.info_outline, color: Colors.white),
-                      tooltip: 'Como fotografar',
-                      onPressed: _showPhotographyGuide,
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(
-                        minWidth: 40,
-                        minHeight: 40,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          blurRadius: 6,
-                          spreadRadius: 1,
-                        ),
-                      ],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: IconButton(
-                      icon: const Icon(Icons.logout, color: Colors.white),
-                      onPressed: () => showDialog(
-                        context: context,
-                        builder: (dialogContext) => AlertDialog(
-                          title: const Text('Logout'),
-                          content: const Text('Tem certeza que deseja sair?'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(dialogContext),
-                              child: const Text('Cancelar'),
-                            ),
-                            TextButton(
-                              onPressed: () =>
-                                  _handleLogout(authService, dialogContext),
-                              child: const Text('Sair'),
-                            ),
-                          ],
-                        ),
-                      ),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(
-                        minWidth: 40,
-                        minHeight: 40,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            child: const Center(
+              child: Icon(Icons.person, color: Colors.white, size: 24),
             ),
           ),
         ),
+        title: user?.displayName ?? 'Usuário',
+        subtitle: user?.email ?? '',
+        actions: [
+          if (pendingCount > 0 || failedCount > 0)
+            CustomAppBarAction(
+              child: Badge(
+                label: Text('${pendingCount + failedCount}'),
+                child: IconButton(
+                  icon: _isSyncing
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
+                          ),
+                        )
+                      : const Icon(Icons.cloud_upload, color: Colors.white),
+                  onPressed: _isSyncing ? null : _syncUploads,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(
+                    minWidth: 40,
+                    minHeight: 40,
+                  ),
+                ),
+              ),
+            ),
+          CustomAppBarAction(
+            child: IconButton(
+              icon: const Icon(
+                Icons.add_home_work_outlined,
+                color: Colors.white,
+              ),
+              tooltip: 'Minhas propriedades',
+              onPressed: _openMyPropertiesPage,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+            ),
+          ),
+          CustomAppBarAction(
+            child: IconButton(
+              icon: const Icon(Icons.info_outline, color: Colors.white),
+              tooltip: 'Como fotografar',
+              onPressed: _showPhotographyGuide,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+            ),
+          ),
+          CustomAppBarAction(
+            child: IconButton(
+              icon: const Icon(Icons.logout, color: Colors.white),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (dialogContext) => AlertDialog(
+                  title: const Text('Logout'),
+                  content: const Text('Tem certeza que deseja sair?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(dialogContext),
+                      child: const Text('Cancelar'),
+                    ),
+                    TextButton(
+                      onPressed: () =>
+                          _handleLogout(authService, dialogContext),
+                      child: const Text('Sair'),
+                    ),
+                  ],
+                ),
+              ),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showImageOptions,
